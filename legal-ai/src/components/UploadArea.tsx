@@ -1,9 +1,9 @@
-// src/components/UploadArea.tsx
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader } from "./Loader";
 import { SummaryCard } from "./SummaryCard";
+import { PDFViewer } from './PdfViewer';
 
 export interface LegalSummary {
   summary: string;
@@ -16,10 +16,26 @@ export const UploadArea: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState<LegalSummary | null>(null);
+  const summaryRef = useRef<HTMLDivElement>(null); 
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
+
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      setPdfUrl(URL.createObjectURL(selectedFile));
+
+      // Scroll to the button immediately after setting file
+        setTimeout(() => {
+          if (buttonRef.current) {
+            const y =
+              buttonRef.current.getBoundingClientRect().top + window.pageYOffset - 10; // adjust 100px space as needed
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+    }, 100);
+
     }
   };
 
@@ -39,6 +55,11 @@ export const UploadArea: React.FC = () => {
 
       const data = await response.json();
       setSummary(data);
+
+      setTimeout(() => {
+        summaryRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300); 
+
     } catch (err) {
       alert("Failed to summarize document.");
     } finally {
@@ -46,14 +67,27 @@ export const UploadArea: React.FC = () => {
     }
   };
 
-  return (
-    <div className="w-full max-w-xl mx-auto space-y-6 mt-10">
+ return (
+    <div className="w-full max-w-5xl mx-auto space-y-8 mt-10">
       <Input type="file" accept="application/pdf" onChange={handleFileChange} />
-      <Button onClick={handleUpload} disabled={!file || loading}>
-        {loading ? "Uploading..." : "Summarize PDF"}
-      </Button>
-      {loading && <Loader />}
-      {summary && <SummaryCard summary={summary} />}
+
+      <div className="flex items-center gap-4">
+        <Button
+          ref={buttonRef}
+          onClick={handleUpload}
+          disabled={!file || loading}
+        >
+          {loading ? 'Uploading...' : 'Summarize PDF'}
+        </Button>
+        {loading && <Loader />}
+      </div>
+
+      {pdfUrl && <PDFViewer fileUrl={pdfUrl} />}
+      {summary && (
+        <div ref={summaryRef}>
+          <SummaryCard summary={summary} />
+        </div>
+      )}
     </div>
   );
 };

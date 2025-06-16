@@ -1,44 +1,61 @@
-// src/components/SummaryCard.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import type { LegalSummary } from './UploadArea';
+import { Button } from "@/components/ui/button";
+
+interface SectionProps {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}
+
+const CollapsibleSection: React.FC<SectionProps> = ({ title, children, defaultOpen = true }) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-xl font-bold">{title}</h2>
+        <Button variant="outline" size="sm" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? "Hide" : "Show"}
+        </Button>
+      </div>
+      {isOpen && <div className="pl-2">{children}</div>}
+    </div>
+  );
+};
 
 export const SummaryCard: React.FC<{ summary: LegalSummary }> = ({ summary }) => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-md space-y-6">
-      <section>
-        <h2 className="text-xl font-bold mb-2">📄 Summary</h2>
+      <CollapsibleSection title="📄 Summary">
         <p>{summary.summary}</p>
-      </section>
+      </CollapsibleSection>
 
       {summary.key_legal_clauses?.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mb-2">📌 Key Legal Clauses</h2>
+        <CollapsibleSection title="📌 Key Legal Clauses">
           <ul className="list-disc list-inside space-y-1">
             {summary.key_legal_clauses.map((clause, index) => (
               <li key={index}>{clause}</li>
             ))}
           </ul>
-        </section>
+        </CollapsibleSection>
       )}
 
       {summary.flagged_clauses?.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mb-2">🚩 Flagged Clauses</h2>
+        <CollapsibleSection title="🚩 Flagged Clauses">
           <ul className="list-disc list-inside space-y-1 text-red-600">
             {summary.flagged_clauses.map((clause, index) => (
               <li key={index}>{clause}</li>
             ))}
           </ul>
-        </section>
+        </CollapsibleSection>
       )}
 
       {summary.plain_english_explanation && (
-        <section>
-          <h2 className="text-xl font-bold mb-2">🗣️ Plain English Explanation</h2>
+        <CollapsibleSection title="🗣️ Plain English Explanation">
           <p>{summary.plain_english_explanation}</p>
-        </section>
+        </CollapsibleSection>
       )}
     </div>
   );
 };
-

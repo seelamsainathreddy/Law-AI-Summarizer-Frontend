@@ -23,6 +23,9 @@ function App() {
       <Router>
         <Routes>
 
+        <Route path="/" element={<Navigate to="/legal-ai" replace />} />
+
+
         <Route
             path="/dashboard"
             element={

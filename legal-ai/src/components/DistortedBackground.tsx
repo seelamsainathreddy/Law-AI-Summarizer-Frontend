@@ -1,5 +1,5 @@
 // components/DistortedBackground.tsx
-import React, { useRef } from "react";
+import  { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { MeshWobbleMaterial } from "@react-three/drei";
 

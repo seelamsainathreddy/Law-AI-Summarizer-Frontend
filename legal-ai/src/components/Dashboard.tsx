@@ -18,6 +18,7 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // Fetch summaries on mount
   useEffect(() => {
@@ -28,7 +29,7 @@ export const Dashboard: React.FC = () => {
         const token = localStorage.getItem("token");
         if (!token) throw new Error("Not authenticated");
 
-        const res = await fetch("http://localhost:8000/summaries", {
+        const res = await fetch(`${BASE_URL}/summaries`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

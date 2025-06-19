@@ -21,6 +21,7 @@ export const UploadArea: React.FC = () => {
   const [summary, setSummary] = useState<LegalSummary | null>(null);
   const summaryRef = useRef<HTMLDivElement>(null); 
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
@@ -48,7 +49,7 @@ export const UploadArea: React.FC = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/summarize", {
+      const response = await fetch(`${BASE_URL}/summarize`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

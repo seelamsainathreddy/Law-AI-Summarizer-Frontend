@@ -8,6 +8,8 @@ export const RegistrationForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ export const RegistrationForm: React.FC = () => {
     setSuccess(false);
 
     try {
-      const res = await fetch("http://localhost:8000/register", {
+      const res = await fetch(`${BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

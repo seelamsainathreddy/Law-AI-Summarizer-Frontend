@@ -25,6 +25,9 @@ const CollapsibleSection: React.FC<SectionProps> = ({ title, children, defaultOp
 };
 
 export const SummaryCard: React.FC<{ summary: LegalSummary }> = ({ summary }) => {
+
+  console.log("SummaryCard summary prop:", summary);
+
   return (
     <div className="bg-white rounded-xl p-6 shadow-md space-y-6">
       <CollapsibleSection title="📄 Summary">

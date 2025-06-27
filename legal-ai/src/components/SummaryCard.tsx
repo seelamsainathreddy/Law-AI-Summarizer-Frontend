@@ -30,12 +30,12 @@ export const SummaryCard: React.FC<{ summary: LegalSummary }> = ({ summary }) =>
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-md space-y-6">
-      <CollapsibleSection title="📄 Summary">
+      <CollapsibleSection title="Summary">
         <p>{summary.summary}</p>
       </CollapsibleSection>
 
       {summary.key_legal_clauses?.length > 0 && (
-        <CollapsibleSection title="📌 Key Legal Clauses">
+        <CollapsibleSection title="Key Legal Clauses">
           <ul className="list-disc list-inside space-y-1">
             {summary.key_legal_clauses.map((clause, index) => (
               <li key={index}>{clause}</li>
@@ -45,7 +45,7 @@ export const SummaryCard: React.FC<{ summary: LegalSummary }> = ({ summary }) =>
       )}
 
       {summary.flagged_clauses?.length > 0 && (
-        <CollapsibleSection title="🚩 Flagged Clauses">
+        <CollapsibleSection title="Flagged Clauses">
           <ul className="list-disc list-inside space-y-1 text-red-600">
             {summary.flagged_clauses.map((clause, index) => (
               <li key={index}>{clause}</li>
@@ -55,7 +55,7 @@ export const SummaryCard: React.FC<{ summary: LegalSummary }> = ({ summary }) =>
       )}
 
       {summary.plain_english_explanation && (
-        <CollapsibleSection title="🗣️ Plain English Explanation">
+        <CollapsibleSection title="Plain English Explanation">
           <p>{summary.plain_english_explanation}</p>
         </CollapsibleSection>
       )}

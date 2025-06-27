@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import HomeNavbar from "@/components/layout/HomeNavbar";
+import { useAuth } from "@/context/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface LegalSummary {
   summary: string;
@@ -14,13 +17,13 @@ interface SummaryRecord {
 }
 
 export const Dashboard: React.FC = () => {
+  const { user, logout } = useAuth();
   const [summaries, setSummaries] = useState<SummaryRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [expandedIndices, setExpandedIndices] = useState<Set<number>>(new Set());
   const BASE_URL = import.meta.env.VITE_API_URL;
 
-  // Fetch summaries on mount
   useEffect(() => {
     const fetchSummaries = async () => {
       setLoading(true);
@@ -52,7 +55,15 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+    setExpandedIndices((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
 
   const formatDate = (isoString: string) => {
@@ -61,61 +72,78 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">Your Summaries</h1>
+    <>
+      <HomeNavbar user={user ?? undefined} onLogout={logout} />
+      <div className="max-w-5xl mx-auto p-6 pt-28">
+        <h1 className="text-3xl font-semibold mb-8 text-gray-800 tracking-tight">
+          Your Legal Summaries
+        </h1>
 
-      {loading && <p>Loading summaries...</p>}
-      {error && <p className="text-red-600">{error}</p>}
+        {loading && <p>Loading summaries...</p>}
+        {error && <p className="text-red-600">{error}</p>}
+        {!loading && !error && summaries.length === 0 && (
+          <p>No summaries found. Upload some PDFs first!</p>
+        )}
 
-      {!loading && !error && summaries.length === 0 && (
-        <p>No summaries found. Upload some PDFs first!</p>
-      )}
-
-      <ul className="space-y-4">
-        {summaries.map((record, idx) => (
-          <li
-            key={idx}
-            className="border rounded-md p-4 cursor-pointer hover:bg-gray-50"
-            onClick={() => toggleExpand(idx)}
-          >
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-semibold">{record.filename}</p>
-                <p className="text-sm text-gray-500">
-                  Uploaded: {formatDate(record.uploaded_at)}
-                </p>
+        <ul className="space-y-6">
+          {summaries.map((record, idx) => (
+            <li
+              key={idx}
+              className="rounded-2xl border border-gray-200 shadow-sm p-6 transition hover:shadow-md bg-white cursor-pointer"
+              onClick={() => toggleExpand(idx)}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-lg font-medium text-gray-900">
+                    {record.filename}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Uploaded: {formatDate(record.uploaded_at)}
+                  </p>
+                </div>
+                <div className="text-sm text-green-700 font-medium">
+                  {expandedIndices.has(idx) ? "▲ Collapse" : "▼ Expand"}
+                </div>
               </div>
-              <div>
-                {expandedIndex === idx ? (
-                  <span className="text-sm text-blue-600">▲ Collapse</span>
-                ) : (
-                  <span className="text-sm text-blue-600">▼ Expand</span>
+
+              <AnimatePresence>
+                {expandedIndices.has(idx) && (
+                  <motion.div
+                    key="expand"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+          <div className="mt-4 space-y-4 text-sm leading-relaxed border-t border-gray-100 pt-4">
+  <p>
+    <span className="font-semibold">Summary:</span>{" "}
+    {record.summary.summary}
+  </p>
+  <p>
+    <span className="font-semibold text-green-700">Key Legal Clauses:</span>{" "}
+    {record.summary.key_legal_clauses.join(", ")}
+  </p>
+  <p>
+    <span className="font-semibold text-orange-400">Flagged Clauses:</span>{" "}
+    {record.summary.flagged_clauses.join(", ") || "None"}
+  </p>
+  <p>
+    <span className="font-semibold">Plain English Explanation:</span>{" "}
+    {record.summary.plain_english_explanation}
+  </p>
+</div>
+
+                  </motion.div>
                 )}
-              </div>
-            </div>
-
-            {expandedIndex === idx && (
-              <div className="mt-4 space-y-2 text-gray-700">
-                <p>
-                  <strong>Summary:</strong> {record.summary.summary}
-                </p>
-                <p>
-                  <strong>Key Legal Clauses:</strong>{" "}
-                  {record.summary.key_legal_clauses.join(", ")}
-                </p>
-                <p>
-                  <strong>Flagged Clauses:</strong>{" "}
-                  {record.summary.flagged_clauses.join(", ") || "None"}
-                </p>
-                <p>
-                  <strong>Plain English Explanation:</strong>{" "}
-                  {record.summary.plain_english_explanation}
-                </p>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
+              </AnimatePresence>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 };
+
+export default Dashboard;

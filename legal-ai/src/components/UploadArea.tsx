@@ -75,13 +75,29 @@ export const UploadArea: React.FC = () => {
       {/* Header */}
   
 
-      {/* Upload and Actions */}
-      <Input type="file" accept="application/pdf" onChange={handleFileChange} />
+      {/* Enhanced Upload UI with White Background */}
+      <label
+        htmlFor="pdf-upload"
+        className="cursor-pointer w-full md:w-72 h-32 bg-white border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:border-emerald-500 transition-colors duration-200"
+      >
+        <span className="text-sm font-medium">📄 Click to upload PDF</span>
+        <span className="text-xs text-gray-400 mt-1">Only PDF files supported</span>
+        <Input
+          id="pdf-upload"
+          type="file"
+          accept="application/pdf"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+      </label>
+
       <div className="flex items-center gap-4">
         <Button
           ref={buttonRef}
           onClick={handleUpload}
           disabled={!file || loading}
+          className="bg-green-700 hover:bg-green-900 text-white"
+
         >
           {loading ? 'Uploading...' : 'Summarize PDF'}
         </Button>
@@ -91,7 +107,7 @@ export const UploadArea: React.FC = () => {
       {/* Preview and Summary */}
       {pdfUrl && <PDFViewer fileUrl={pdfUrl} />}
       {summary && (
-        <div ref={summaryRef}>
+        <div ref={summaryRef} className='pb-10'>
           <SummaryCard summary={summary} />
         </div>
       )}

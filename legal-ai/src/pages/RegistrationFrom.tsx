@@ -44,7 +44,7 @@ export const RegistrationForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-green-50 flex items-center justify-center px-4">
+    <div className="min-h-screen  flex items-center justify-center px-4 bg-gradient-animated">
       <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-md animate-fade-in">
         <div className="text-center mb-6">
           <Link to="/legal-ai">

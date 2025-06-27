@@ -4,7 +4,7 @@ import { LoginForm } from "./pages/LoginForm";
 import { RegistrationForm } from "./pages/RegistrationFrom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import type { JSX } from "react";
-import LandingPage from "./pages/LandingPage";
+import LandingPage from "./pages/Landing";
 import { Dashboard } from "./components/Dashboard";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {

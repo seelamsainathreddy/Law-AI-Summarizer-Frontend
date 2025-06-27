@@ -1,7 +1,7 @@
 import React from 'react';
 import { UploadArea } from "@/components/UploadArea";
 import { useAuth } from '@/context/AuthContext';
-import HomeNavbar from '@/components/layout/HomeNavBar';
+import HomeNavbar from '@/components/layout/HomeNavbar';
 
 const Home: React.FC = () => {
   const { user, logout } = useAuth();

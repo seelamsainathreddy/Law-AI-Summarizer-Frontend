@@ -19,7 +19,7 @@ Built for legal professionals, founders, and anyone who needs to understand befo
 
 ##  Demo
 
-Try it live: [https://your-legal-ai.vercel.app](https://your-legal-ai.vercel.app)  
+Try it live: [https://law-ai-summarizer-frontend.vercel.app/](https://your-legal-ai.vercel.app)  
 *(Replace with your deployed link)*
 
 ---

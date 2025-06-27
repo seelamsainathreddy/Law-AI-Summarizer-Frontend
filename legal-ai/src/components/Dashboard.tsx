@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HomeNavbar from "@/components/layout/HomeNavBar";
+import HomeNavbar from "@/components/layout/HomeNavbar";
 import { useAuth } from "@/context/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 
